@@ -20,19 +20,18 @@ No database service is needed.
 
 | Variable | Default | Notes |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | *(you enter it)* | Key for Claude Code, the default agent. Get one at https://console.anthropic.com/settings/keys |
+| `ANTHROPIC_API_KEY` | *(you enter it)* | Required. Key for Claude Code, the default agent. Get one at https://console.anthropic.com/settings/keys |
 | `VIBE_KANBAN_PASSWORD` | `${{secret(32)}}` | Generated. Password for the web UI (Vibe Kanban has no login of its own) |
 | `VIBE_KANBAN_USERNAME` | `admin` | User name for the web UI |
-| `GIT_REPOS` | *(empty, optional)* | Git URLs to clone into `/data/repos` on boot, separated by spaces or commas |
 | `PORT` | `8080` | Port Caddy listens on |
 
-Add `GH_TOKEN` (a GitHub token) for private repos, pushes and pull requests; `git` and `gh` pick it up. Other agents read their usual variables; add them in Railway's **Variables** tab: `OPENAI_API_KEY` (Codex), `GEMINI_API_KEY` (Gemini CLI), `DASHSCOPE_API_KEY` (Qwen Code), and so on. Agents can also be signed in from the terminal of a workspace; their logins stay on the volume.
+Optional variables you can add: `GIT_REPOS` (git URLs, separated by spaces or commas, cloned into `/data/repos` on boot) and `GH_TOKEN` (a GitHub token) for private repos, pushes and pull requests; `git` and `gh` pick it up. Other agents read their usual variables; add them in Railway's **Variables** tab: `OPENAI_API_KEY` (Codex), `GEMINI_API_KEY` (Gemini CLI), `DASHSCOPE_API_KEY` (Qwen Code), and so on. Agents can also be signed in from the terminal of a workspace; their logins stay on the volume.
 
 ## After deploy
 
 1. Open the public URL and log in with `admin` and the `VIBE_KANBAN_PASSWORD` from the service's **Variables** tab.
 2. On the welcome screen choose **Don't sign in** (bloop's cloud is shut down; nothing needs it).
-3. Add a repo: put its URL in `GIT_REPOS` (it is cloned to `/data/repos/<name>` on the next deploy), or create a new repo from the UI under `/data/repos`.
+3. Add a repo: add a `GIT_REPOS` variable with its URL (it is cloned to `/data/repos/<name>` on the next deploy), or create a new repo from the UI under `/data/repos`.
 4. Create a workspace, pick the repo and an agent, describe the task, and review the diff when the agent is done.
 
 Each agent is installed the first time you use it (Claude Code is about 235 MB) and is kept on the volume, so later runs start at once.
