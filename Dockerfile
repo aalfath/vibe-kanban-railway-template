@@ -41,6 +41,9 @@ COPY --from=download /usr/local/bin/vibe-kanban /usr/local/bin/vibe-kanban
 COPY --from=download /usr/local/bin/gh /usr/local/bin/gh
 # Lean npx: installs each pinned agent once on the volume and runs it without a
 # resident `npm exec` parent (see npx-shim.sh).
+# (/usr/local/bin/npx is a symlink to npm's npx-cli.js: remove it first so COPY
+# doesn't overwrite npm's own file through the link.)
+RUN rm /usr/local/bin/npx
 COPY npx-shim.sh /usr/local/bin/npx
 RUN chmod 755 /usr/local/bin/npx && npx --version >/dev/null
 COPY Caddyfile /etc/vibe-kanban/Caddyfile
