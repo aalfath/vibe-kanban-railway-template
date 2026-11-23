@@ -39,6 +39,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=caddy /usr/bin/caddy /usr/local/bin/caddy
 COPY --from=download /usr/local/bin/vibe-kanban /usr/local/bin/vibe-kanban
 COPY --from=download /usr/local/bin/gh /usr/local/bin/gh
+# Lean npx: installs each pinned agent once on the volume and runs it without a
+# resident `npm exec` parent (see npx-shim.sh).
+COPY npx-shim.sh /usr/local/bin/npx
+RUN chmod 755 /usr/local/bin/npx && npx --version >/dev/null
 COPY Caddyfile /etc/vibe-kanban/Caddyfile
 COPY start.sh /usr/local/bin/vibe-kanban-start
 RUN chmod 755 /usr/local/bin/vibe-kanban-start

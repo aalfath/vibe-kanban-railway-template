@@ -99,7 +99,18 @@ if [ -n "${GIT_REPOS:-}" ]; then
   ) &
 fi
 
+# Coding agents are installed on first use into the volume (see /usr/local/bin/npx).
+export VK_AGENTS_DIR="$HOME/.vk-agents"
+# The server's start-up model check runs agents from its working directory; the npx
+# shim skips agents that aren't installed yet when called from there.
+export VK_IDLE_DIR="$HOME/.vk-idle"
+mkdir -p "$VK_AGENTS_DIR" "$VK_IDLE_DIR"
+VK_IDLE_DIR=$(cd "$VK_IDLE_DIR" && pwd -P)
+# Old npx caches from earlier boots are never used again.
+rm -rf "$HOME/.npm/_npx" 2>/dev/null || true
+
 # Vibe Kanban listens only on loopback; Caddy is the only public listener.
+cd "$VK_IDLE_DIR"
 HOST=127.0.0.1 PORT="$VK_INTERNAL_PORT" BACKEND_PORT="$VK_INTERNAL_PORT" \
   VK_ALLOWED_ORIGINS="${VK_ALLOWED_ORIGINS:-}" \
   /usr/local/bin/vibe-kanban &
